@@ -2,13 +2,14 @@ package com.example.onlinecabbookingsystem;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
 public class OnlineCabBookingSystemApplication {
 
     public static void main(String[] args) {
 
-        SpringApplication.run(OnlineCabBookingSystemApplication.class, args);
+        ApplicationContext applicationContext = SpringApplication.run(OnlineCabBookingSystemApplication.class, args);
     }
 
 }
