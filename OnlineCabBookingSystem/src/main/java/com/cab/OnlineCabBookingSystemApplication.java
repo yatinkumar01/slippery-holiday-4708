@@ -1,4 +1,4 @@
-package com.example.onlinecabbookingsystem;
+package com.cab;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
