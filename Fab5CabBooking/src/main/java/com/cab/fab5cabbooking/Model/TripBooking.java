@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 public class TripBooking {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Integer tripBookingId;
     private String fromLocation;
