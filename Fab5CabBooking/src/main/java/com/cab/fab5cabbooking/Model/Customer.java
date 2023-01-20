@@ -22,6 +22,7 @@ public class Customer {
     @Embedded
     private AbstractUser user;
     @OneToOne
+    @PrimaryKeyJoinColumn
     @JsonIgnore
     private TripBooking tripBooking;
 

@@ -25,6 +25,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<MyErrorDetails>(object, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(DriverNotFoundException.class)
+    ResponseEntity<MyErrorDetails> driverNotFoundExceptionHandler(DriverNotFoundException driverNotFoundException, WebRequest webRequest) {
+        MyErrorDetails object = new MyErrorDetails(LocalDateTime.now(), driverNotFoundException.getMessage(), webRequest.getDescription(false));
+        return new ResponseEntity<MyErrorDetails>(object, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(NoHandlerFoundException.class)
     ResponseEntity<MyErrorDetails> noHandlerExceptionHandler(NoHandlerFoundException customerException, WebRequest webRequest) {
         MyErrorDetails object = new MyErrorDetails(LocalDateTime.now(), customerException.getMessage(), webRequest.getDescription(false));
