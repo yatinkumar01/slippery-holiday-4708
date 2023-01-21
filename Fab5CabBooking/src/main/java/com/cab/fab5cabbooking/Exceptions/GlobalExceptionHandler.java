@@ -31,15 +31,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(myErrorDetails, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(TripNotFoundException.class)
-    ResponseEntity<MyErrorDetails> tripNotFoundExceptionHandler(TripNotFoundException tripNotFoundException, WebRequest webRequest) {
-        MyErrorDetails object = new MyErrorDetails(LocalDateTime.now(), tripNotFoundException.getMessage(), webRequest.getDescription(false));
-        return new ResponseEntity<MyErrorDetails>(object, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(DriverNotFoundException.class)
-    ResponseEntity<MyErrorDetails> driverNotFoundExceptionHandler(DriverNotFoundException driverNotFoundException, WebRequest webRequest) {
-        MyErrorDetails object = new MyErrorDetails(LocalDateTime.now(), driverNotFoundException.getMessage(), webRequest.getDescription(false));
+    @ExceptionHandler(TripException.class)
+    ResponseEntity<MyErrorDetails> tripNotFoundExceptionHandler(TripException tripException, WebRequest webRequest) {
+        MyErrorDetails object = new MyErrorDetails(LocalDateTime.now(), tripException.getMessage(), webRequest.getDescription(false));
         return new ResponseEntity<MyErrorDetails>(object, HttpStatus.NOT_FOUND);
     }
 
