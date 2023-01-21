@@ -6,12 +6,17 @@ import org.springframework.stereotype.Service;
 import com.cab.fab5cabbooking.Exceptions.AdminException;
 import com.cab.fab5cabbooking.Model.AbstractUser;
 import com.cab.fab5cabbooking.Model.Admin;
+import com.cab.fab5cabbooking.Model.CurrentSessionUser;
 import com.cab.fab5cabbooking.Repository.AdminRepository;
+import com.cab.fab5cabbooking.Repository.CurrentUserSessionRepository;
 @Service
 public class AdminServiceImpl implements AdminService{
 
 	@Autowired
 	private AdminRepository repo;
+	
+	@Autowired
+	private CurrentUserSessionRepository srepo;
 	
 	@Override
 	public Admin createUser( Admin admin ) throws AdminException {
@@ -21,12 +26,27 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public Admin  updateUser(Admin admin, Integer id) throws AdminException {
+	public Admin  updateUser(Admin admin, String key) throws AdminException {
 		
-	Admin a  =	repo.findById(id).orElseThrow(()-> new AdminException("Admin not found with this id : "+admin.getAdminId()
-	                                                                            +" Please enter correct Adminid"));
+	CurrentSessionUser loggedinUser  =	srepo.findByUuid(key);
+	
+	if(loggedinUser == null) {
 		
-	return repo.save(admin);
+		throw new AdminException("Please provide a valid key to update Admin");
+	}
+	
+	if( loggedinUser.getId() == admin.getAdminId()) {
+	
+		return repo.save(admin);
+		
+		
+	}else {
+		
+		throw new AdminException("Invalid Admin details" );
+		
+	}
+	
+		
 	}
 
 }

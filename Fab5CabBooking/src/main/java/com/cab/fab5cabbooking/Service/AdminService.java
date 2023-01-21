@@ -11,6 +11,6 @@ public interface AdminService {
 	
     public Admin createUser(Admin admin)throws AdminException;
 	
-    public Admin updateUser(Admin admin,Integer id)throws AdminException;
+    public Admin updateUser(Admin admin,String key)throws AdminException;
 	
 }

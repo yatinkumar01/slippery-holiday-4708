@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import org.apache.catalina.startup.Tomcat.ExistingStandardWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,13 +32,9 @@ public class AdminController {
 	@Autowired
 	private AdminRepository repo;
 	
-	/**
-	 * @param admin
-	 * @return
-	 * @throws AdminException
-	 */
+	
 	@PostMapping("Admin")
-	public Admin createAdmin(@RequestBody Admin admin) throws AdminException {
+	public ResponseEntity<Admin> createAdmin(@RequestBody Admin admin) throws AdminException {
 		
 		Admin  exisitingAdmin =  repo.findByUsername(admin.getUsername());
 		
@@ -44,7 +42,7 @@ public class AdminController {
 		
 		Admin createdAdmin =  service.createUser(admin);
 
-	  return createdAdmin;
+	  return new ResponseEntity<>(createdAdmin,HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/hello")
@@ -54,18 +52,13 @@ public class AdminController {
 	
 	
 	@PutMapping("/Admin")
-	public Admin updateAdmin(@RequestBody Admin admin, int id) throws AdminException {
+	public ResponseEntity<Admin>  updateAdmin(@RequestBody Admin admin, String key) throws AdminException {
 		
-		Optional<Admin>  exisitingAdmin =  repo.findById(id);
-		
-		if( exisitingAdmin.isEmpty()) {
+	
+			Admin updatedAdmin = service.updateUser(admin,key ) ;
 			
-			throw new AdminException("Please Enter valid detail. Admin not found with this details");
-			
-		}else {
+			return new ResponseEntity<>(updatedAdmin,HttpStatus.OK);
 		
-			return service.updateUser(admin,admin.getAdminId() ) ;
-		}
 	}
 	
 	
@@ -75,18 +68,21 @@ public class AdminController {
 	
 	@PostMapping("/loginAdmin")
 	
-	public String AdminLogin(@RequestBody Login login) throws AdminException, CustomerException, LoginException {
+	public  ResponseEntity<String>  AdminLogin(@RequestBody Login login) throws AdminException, CustomerException, LoginException {
 	
 		
-		return  loginservice.login(login);
+		String result =  loginservice.login(login);
 		
+		return new ResponseEntity<>(result,HttpStatus.OK);
 		
 	}
 	
 	@PostMapping("/Logout")
-	public String AdminLogour(@RequestParam(required = false) String key) throws AdminException, CustomerException, LoginException {
+	public ResponseEntity<String> AdminLogout(@RequestParam(required = false) String key) throws AdminException, CustomerException, LoginException {
 		
-		return loginservice.logOut(key);
+      String result = loginservice.logOut(key);
+	
+      return new ResponseEntity<>(result,HttpStatus.OK);
 	}
 	
 	
