@@ -14,15 +14,15 @@ public interface TripBookingService {
 
     public TripBooking deleteTrip(TripBooking tripBooking) throws TripNotFoundException;
 
-    public List<TripBooking> viewAllTripsOfCustomer(Integer customerId) throws TripNotFoundException;
+    public TripBooking viewTripOfCustomer(Integer customerId) throws TripNotFoundException, CustomerException;
 
     public TripBooking endTrip(Integer tripId) throws TripNotFoundException;
 
-    public String calculateBillAmount(Integer customerId) throws TripNotFoundException;
+    public String calculateBillAmount(Integer customerId) throws TripNotFoundException, CustomerException;
 
 
     /* admin methods */
-    public List<TripBooking> getAllTripsCabWise() throws TripNotFoundException;
+    public List<TripBooking> getAllTripsCabWise(String cabType) throws TripNotFoundException;
 
     public List<TripBooking> getAllTrips() throws TripNotFoundException;
 
