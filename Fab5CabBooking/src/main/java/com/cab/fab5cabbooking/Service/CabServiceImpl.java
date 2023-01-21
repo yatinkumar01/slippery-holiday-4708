@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 public class CabServiceImpl implements CabService {
     @Autowired
@@ -19,7 +20,7 @@ public class CabServiceImpl implements CabService {
         CabType type = cab.getCabtype();
 
         cab.setPerKmRate(type.providePrice());
-        cab.setCapacity(type.checkCapacity());
+        cab.setSittingCapacity(type.sittingCapacity());
 
         return cabRepository.save(cab);
     }
@@ -28,7 +29,10 @@ public class CabServiceImpl implements CabService {
     public Cab updateCab(int cabId, Cab cab) throws CabException {
 
         Cab cabObj = cabRepository.findById(cabId).orElseThrow(() -> new CabException("Cab does not exist with ID" + cabId));
-        return cabRepository.save(cabObj);
+        CabType type = cab.getCabtype();
+        cab.setPerKmRate(type.providePrice());
+        cab.setSittingCapacity(type.sittingCapacity());
+        return cabRepository.save(cab);
     }
 
     @Override

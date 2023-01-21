@@ -13,10 +13,11 @@ import java.util.List;
 @Repository
 public interface TripBookingRepository extends JpaRepository<TripBooking, Integer> {
 
-    @Query("SELECT T FROM TripBooking T WHERE T.customerId=:cid")
-    public List<TripBooking> getAllCustomerTrips(Integer cid) throws CustomerException;
+   /* @Query("select * from TripBooking where customerId=:cid")
+    public List<TripBooking> getAllCustomerTrips(Integer cid) throws CustomerException;*/
 
-    @Query("SELECT T FROM TripBooking T WHERE T.customerId =:customerId AND BETWEEN T.fromDateTime=:startDate AND " +
-            "T.toDateTime=:endDate ORDER BY T.customerId")
-    public List<TripBooking> getTripsBetweenDates(Integer customerId, LocalDate startDate, LocalDate endDate);
+    /*@Query("SELECT T FROM TripBooking T WHERE T.customerId =:customerId AND BETWEEN T.fromDateTime=:startDate AND " +
+            "T.toDateTime=:endDate ORDER BY T.customerId")*/
+    /*@Query("select t from TripBooking t where t.customer.customerId=?1 AND DATE BETWEEN t.fromDate=?2 and t.endDate=?3")
+    public List<TripBooking> getTripsBetweenDates(Integer customerId, LocalDate startDate, LocalDate endDate);*/
 }

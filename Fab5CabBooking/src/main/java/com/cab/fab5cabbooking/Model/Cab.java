@@ -1,5 +1,6 @@
 package com.cab.fab5cabbooking.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,13 +21,16 @@ public class Cab {
     @NotNull
     private CabType cabtype;
     private double perKmRate;
-    private Integer capacity;
-    private Integer getCapacity;
+//    private Integer capacity;
+    private Integer sittingCapacity;
 
     private Boolean cabAvailable = true;
     @NotNull
     private String registrationNumber;
-    private Integer driverId;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "cab", cascade = CascadeType.ALL)
+    private Driver driver;
 
 }
 

@@ -1,23 +1,23 @@
 package com.cab.fab5cabbooking.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@ToString
+@Data
 public class TripBooking {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
 
     private Integer tripBookingId;
     private String fromLocation;
@@ -29,11 +29,13 @@ public class TripBooking {
     @JsonIgnore
     private Double bill;
 
-    @OneToOne(mappedBy = "tripBooking", cascade = CascadeType.ALL)
-    @JoinColumn(name = "tripBookingId")
+    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL)
     private Customer customer;
 
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     private Driver driver;
+
+
 }
