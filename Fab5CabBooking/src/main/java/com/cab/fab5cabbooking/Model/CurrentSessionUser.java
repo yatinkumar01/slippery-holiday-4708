@@ -15,17 +15,14 @@ import java.time.LocalDateTime;
 @ToString
 public class CurrentSessionUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  
     @Column(unique = true)
-    private Integer userId;
+    private Integer id;
+    
     private String uuid;
+    
     private LocalDateTime localDateTime;
-
-    public CurrentSessionUser(Integer userId, String uuid, LocalDateTime localDateTime) {
-        super();
-        this.userId = userId;
-        this.uuid = uuid;
-        this.localDateTime = localDateTime;
-    }
+   
+    private String role;
+   
 }
