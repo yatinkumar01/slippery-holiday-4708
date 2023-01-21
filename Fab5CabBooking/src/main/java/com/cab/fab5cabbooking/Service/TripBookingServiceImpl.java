@@ -14,6 +14,7 @@ import com.cab.fab5cabbooking.Repository.TripBookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -101,12 +102,12 @@ public class TripBookingServiceImpl implements TripBookingService {
     }
 
     @Override
-    public TripBooking deleteTrip(TripBooking tripBooking) throws TripException {
+    public TripBooking deleteTrip(Integer tripId) throws TripException {
 
         /*
          * this method is intended for internal use*/
 
-        Optional<TripBooking> opt = tripBookingRepository.findById(tripBooking.getTripBookingId());
+        Optional<TripBooking> opt = tripBookingRepository.findById(tripId);
 
         if (opt.isPresent()) {
             TripBooking tb = opt.get();
@@ -196,9 +197,9 @@ public class TripBookingServiceImpl implements TripBookingService {
 
         /*this method gets all the trips for cabs that are registered*/
 
-        List<TripBooking> allTips = tripBookingRepository.findAll();
+        List<TripBooking> allTrips = tripBookingRepository.findAll();
 
-        List<TripBooking> listByCabType = allTips.stream().filter(t -> t.getDriver().getCab().getCabtype().equals(cabType)).toList();
+        List<TripBooking> listByCabType = allTrips.stream().filter(t -> t.getDriver().getCab().getCabtype().equals(cabType)).toList();
 
         if (listByCabType.size() != 0) {
             return listByCabType;
@@ -216,7 +217,7 @@ public class TripBookingServiceImpl implements TripBookingService {
     }
 
     @Override
-    public List<TripBooking> gitTripsBetweenDaysForACustomer(Integer customerId, LocalDateTime startDate, LocalDateTime endDate) throws TripException {
+    public List<TripBooking> gitTripsBetweenDaysForACustomer(Integer customerId, LocalDate startDate, LocalDate endDate) throws TripException {
 
         /*this method gives the result of trips in between dates for a particular customer*/
 

@@ -5,6 +5,7 @@ import com.cab.fab5cabbooking.Exceptions.DriverException;
 import com.cab.fab5cabbooking.Exceptions.TripException;
 import com.cab.fab5cabbooking.Model.TripBooking;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface TripBookingService {
 
     public TripBooking updateTrip(TripBooking tripBooking) throws TripException;
 
-    public TripBooking deleteTrip(TripBooking tripBooking) throws TripException;
+    public TripBooking deleteTrip(Integer tripId) throws TripException;
 
     public TripBooking viewTripOfCustomer(Integer customerId) throws TripException, CustomerException;
 
@@ -26,7 +27,7 @@ public interface TripBookingService {
 
     public List<TripBooking> getAllTrips() throws TripException;
 
-    public List<TripBooking> gitTripsBetweenDaysForACustomer(Integer customerId, LocalDateTime startDate, LocalDateTime endDate) throws TripException;
+    public List<TripBooking> gitTripsBetweenDaysForACustomer(Integer customerId, LocalDate startDate, LocalDate endDate) throws TripException;
 
 
 }
