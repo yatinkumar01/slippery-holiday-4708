@@ -16,8 +16,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TripBookingServiceImpl implements TripBookingService {
@@ -35,9 +37,11 @@ public class TripBookingServiceImpl implements TripBookingService {
     CabRepository cabRepository;
 
     @Override
-    public TripBooking addTrip(TripBooking tripBooking) throws CustomerException, DriverException {
+    public TripBooking addTrip(TripBooking tripBooking, Integer customerId) throws CustomerException, DriverException {
 
         Optional<Customer> opt1 = customerRepository.findById(tripBooking.getCustomer().getCustomerId());
+
+        System.out.println("jai sri ram");
 
         if (opt1.isPresent()) {
             Customer customer = opt1.get();
@@ -62,10 +66,20 @@ public class TripBookingServiceImpl implements TripBookingService {
                 tripBooking.setBill(fare);
                 tripBooking.setDriver(driver);
 
+                System.out.println("jai sri ram");
+
                 /* now assign the trip to customer where he enters destination and source with distance to travel*/
 
-                customer.setTripBooking(tripBooking);
-                tripBooking.setCustomer(customer);
+                Set<TripBooking> customerTrips = new HashSet<>();
+                customerTrips.add(tripBooking);
+                customer.setTripBookingSet(customerTrips);
+//                tripBooking.setCustomer(customer);
+
+                Set<TripBooking> trips = new HashSet<>();
+                trips.add(tripBooking);
+                driver.setTripBookings(trips);
+
+                System.out.println("jai sri ram");
 
                 return tripBookingRepository.save(tripBooking);
             }
@@ -88,12 +102,16 @@ public class TripBookingServiceImpl implements TripBookingService {
 
             TripBooking tripBooking1 = opt.get();
 
+            System.out.println("jai sri ram");
+
             /* here we assign the updated destination and its the  price */
 
             Double distance = tripBooking.getDistanceInKm();
             Double fare = tripBooking.getDriver().getCab().getPerKmRate();
 
             tripBooking.setBill(distance * fare);
+
+            System.out.println("jai sri ram");
 
             return tripBookingRepository.save(tripBooking);
         }
@@ -113,6 +131,8 @@ public class TripBookingServiceImpl implements TripBookingService {
             TripBooking tb = opt.get();
             tb.setDriver(null);
             tripBookingRepository.delete(tb);
+
+            System.out.println("jai sri ram");
             return tb;
         }
         throw new TripException("No trips found with given trip details");
@@ -120,7 +140,7 @@ public class TripBookingServiceImpl implements TripBookingService {
     }
 
     @Override
-    public TripBooking viewTripOfCustomer(Integer customerId) throws TripException, CustomerException {
+    public Set<TripBooking> viewTripOfCustomer(Integer customerId) throws TripException, CustomerException {
 
         /*
          * this method gets all the trip details of a customer based on his id*/
@@ -130,10 +150,17 @@ public class TripBookingServiceImpl implements TripBookingService {
         if (opt.isPresent()) {
             Customer customer = opt.get();
 
-            TripBooking tripBooking = customer.getTripBooking();
+            System.out.println("jai sri ram");
 
-            if (tripBooking != null) {
-                return tripBooking;
+//            TripBooking tripBooking = customer.getTripBooking();
+
+            Set<TripBooking> trips = customer.getTripBookingSet();
+
+            if (trips.size() != 0) {
+
+                System.out.println("jai sri ram");
+
+                return trips;
             }
             throw new TripException("No trips found, you can add by booking trip!!");
         }
@@ -157,9 +184,13 @@ public class TripBookingServiceImpl implements TripBookingService {
             Cab cab = driver.getCab();
             cab.setCabAvailable(true);
 
+            System.out.println("jai sri ram");
+
             driverRepository.save(driver);
             tripBooking.setDriver(driver);
             tripBookingRepository.save(tripBooking);
+
+            System.out.println("jai sri ram");
 
             return tripBooking;
         }
@@ -179,12 +210,22 @@ public class TripBookingServiceImpl implements TripBookingService {
 
             Customer customer = opt.get();
 
-            TripBooking tripBooking = customer.getTripBooking();
+            Set<TripBooking> trips = customer.getTripBookingSet();
 
-            if (tripBooking == null) {
+            System.out.println("jai sri ram");
+
+            if (trips.size() == 0) {
                 throw new TripException("No trips found for the customer with given id -> " + customerId);
             }
-            return "Amount for the Trip -> " + tripBooking.getBill();
+            Double bill = null;
+
+            for (TripBooking t : trips) {
+                bill += t.getBill();
+            }
+
+            System.out.println("jai sri ram");
+
+            return "Amount for the Trip -> " + bill;
         }
         throw new CustomerException("No customer found with given id -> " + customerId);
 
@@ -201,6 +242,10 @@ public class TripBookingServiceImpl implements TripBookingService {
 
         List<TripBooking> listByCabType = allTrips.stream().filter(t -> t.getDriver().getCab().getCabtype().equals(cabType)).toList();
 
+
+        System.out.println("jai sri ram");
+
+
         if (listByCabType.size() != 0) {
             return listByCabType;
         }
@@ -216,16 +261,18 @@ public class TripBookingServiceImpl implements TripBookingService {
         return tripBookingRepository.findAll();
     }
 
-    @Override
+    /*@Override
     public List<TripBooking> gitTripsBetweenDaysForACustomer(Integer customerId, LocalDate startDate, LocalDate endDate) throws TripException {
 
-        /*this method gives the result of trips in between dates for a particular customer*/
+        *//*this method gives the result of trips in between dates for a particular customer*//*
 
         List<TripBooking> tripList = tripBookingRepository.getTripsBetweenDates(customerId, startDate, endDate);
+
+        System.out.println("jai sri ram");
 
         if (tripList.size() == 0) {
             throw new TripException("No trips found in between given dates");
         }
         return tripList;
-    }
+    }*/
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("trip")
@@ -20,10 +21,10 @@ public class TripController {
     @Autowired
     private TripBookingService tbs;
 
-    @PostMapping("/addTrip")
-    public ResponseEntity<TripBooking> addTripDetailsHandler(@RequestBody TripBooking tripBooking) throws CustomerException, DriverException {
+    @PostMapping("/addTrip/{id}")
+    public ResponseEntity<TripBooking> addTripDetailsHandler(@RequestBody TripBooking tripBooking, @PathVariable Integer id) throws CustomerException, DriverException {
 
-        return new ResponseEntity<>(tbs.addTrip(tripBooking), HttpStatus.OK);
+        return new ResponseEntity<>(tbs.addTrip(tripBooking, id), HttpStatus.OK);
     }
 
     @PutMapping("/updateTrip")
@@ -39,7 +40,7 @@ public class TripController {
     }
 
     @GetMapping("/customerTrip/{id}")
-    public ResponseEntity<TripBooking> viewCustomerTripHandler(@PathVariable Integer id) throws TripException, CustomerException {
+    public ResponseEntity<Set<TripBooking>> viewCustomerTripHandler(@PathVariable Integer id) throws TripException, CustomerException {
 
         return new ResponseEntity<>(tbs.viewTripOfCustomer(id), HttpStatus.OK);
     }
@@ -70,9 +71,9 @@ public class TripController {
         return new ResponseEntity<>(tbs.getAllTrips(), HttpStatus.OK);
     }
 
-    @GetMapping("/getTripByDates/{customerId}")
+    /*@GetMapping("/getTripByDates/{customerId}")
     public ResponseEntity<List<TripBooking>> getTripsInBetweenDatesHandler(@PathVariable Integer customerId, @RequestParam LocalDate startDate, @RequestParam LocalDate endDate) throws TripException {
 
         return new ResponseEntity<>(tbs.gitTripsBetweenDaysForACustomer(customerId, startDate, endDate), HttpStatus.OK);
-    }
+    }*/
 }
