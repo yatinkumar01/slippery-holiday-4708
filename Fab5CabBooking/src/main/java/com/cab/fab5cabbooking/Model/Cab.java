@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -22,11 +19,17 @@ public class Cab {
     private Integer cabId;
     @NotNull
     private CabType cabtype;
+<<<<<<< HEAD
     private double perKmRate;
     private Integer capacity;
+=======
+    private Double perKmRate;
+    private Integer getCapacity;
+>>>>>>> 6efae28d972da61bfa84b931dd058beed419e2d9
     private Boolean cabAvailable = true;
     @NotNull
     private String registrationNumber;
+    private Integer driverId;
 
 }
 
