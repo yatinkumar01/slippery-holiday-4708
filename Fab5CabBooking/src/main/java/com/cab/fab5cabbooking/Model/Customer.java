@@ -42,6 +42,7 @@ public class Customer {
     private String email;
     
     @OneToOne
+    @PrimaryKeyJoinColumn
     @JsonIgnore
     private TripBooking tripBooking;
     

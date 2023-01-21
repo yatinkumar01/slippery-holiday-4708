@@ -1,5 +1,6 @@
 package com.cab.fab5cabbooking.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,10 +23,16 @@ public class TripBooking {
     private String toLocation;
     private LocalDateTime fromDateTime;
     private LocalDateTime toDateTime;
-    private float distanceInKm;
-    private float bill;
-    @OneToOne
+    private Double distanceInKm;
+
+    @JsonIgnore
+    private Double bill;
+
+    @OneToOne(mappedBy = "tripBooking", cascade = CascadeType.ALL)
+    @JoinColumn(name = "tripBookingId")
     private Customer customer;
-    @ManyToOne
+
+    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL)
     private Driver driver;
 }
