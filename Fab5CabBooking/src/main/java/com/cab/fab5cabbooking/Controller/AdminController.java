@@ -21,13 +21,12 @@ import com.cab.fab5cabbooking.Service.AdminLoginService;
 
 @RestController
 public class AdminController {
-
     @Autowired
     private AdminService service;
-
+    @Autowired
+    AdminLoginService loginservice;
     @Autowired
     private AdminRepository repo;
-
 
     @PostMapping("Admin")
     public ResponseEntity<Admin> createAdmin(@RequestBody Admin admin) throws AdminException {
@@ -42,41 +41,23 @@ public class AdminController {
         return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
     }
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "hello";
-    }
-
-
     @PutMapping("/Admin")
     public ResponseEntity<Admin> updateAdmin(@RequestBody Admin admin, String key) throws AdminException {
 
-
         Admin updatedAdmin = service.updateUser(admin, key);
-
         return new ResponseEntity<>(updatedAdmin, HttpStatus.OK);
-
     }
-
-    @Autowired
-    AdminLoginService loginservice;
-
-
     @PostMapping("/loginAdmin")
-
     public ResponseEntity<String> AdminLogin(@RequestBody Login login) throws AdminException, CustomerException, LoginException {
 
         String result = loginservice.login(login);
-
         return new ResponseEntity<>(result, HttpStatus.OK);
-
     }
 
     @PostMapping("/Logout")
     public ResponseEntity<String> AdminLogout(@RequestParam(required = false) String key) throws AdminException, CustomerException, LoginException {
 
         String result = loginservice.logOut(key);
-
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

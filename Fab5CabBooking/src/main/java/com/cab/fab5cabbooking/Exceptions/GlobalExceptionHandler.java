@@ -13,10 +13,16 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(AdminException.class)
+    ResponseEntity<MyErrorDetails> adminExceptionHandler(AdminException adminException, WebRequest webRequest) {
+        MyErrorDetails myErrorDetails = new MyErrorDetails(LocalDateTime.now(), adminException.getMessage(), webRequest.getDescription(false));
+        return new ResponseEntity<>(myErrorDetails, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(CustomerException.class)
     ResponseEntity<MyErrorDetails> customExceptionHandler(CustomerException customerException, WebRequest webRequest) {
         MyErrorDetails myErrorDetails = new MyErrorDetails(LocalDateTime.now(), customerException.getMessage(), webRequest.getDescription(false));
-        return new ResponseEntity<MyErrorDetails>(myErrorDetails, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(myErrorDetails, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(CabException.class)
@@ -32,9 +38,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(TripException.class)
-    ResponseEntity<MyErrorDetails> tripNotFoundExceptionHandler(TripException tripException, WebRequest webRequest) {
+    ResponseEntity<MyErrorDetails> tripExceptionHandler(TripException tripException, WebRequest webRequest) {
         MyErrorDetails object = new MyErrorDetails(LocalDateTime.now(), tripException.getMessage(), webRequest.getDescription(false));
-        return new ResponseEntity<MyErrorDetails>(object, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(object, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)

@@ -21,7 +21,6 @@ public interface TripBookingService {
 
     public String calculateBillAmount(Integer customerId) throws TripException, CustomerException;
 
-
     /* admin methods */
     public List<TripBooking> getAllTripsCabWise(String cabType) throws TripException;
 
