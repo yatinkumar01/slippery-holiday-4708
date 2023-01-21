@@ -18,7 +18,7 @@ import com.cab.fab5cabbooking.Repository.CurrentUserSessionRepository;
 import net.bytebuddy.utility.RandomString;
 
 @Service
-public class AdminLoginServiceImpl implements LoginService{
+public class AdminLoginServiceImpl implements AdminLoginService{
 
 	@Autowired
 	AdminRepository adminRepo;
@@ -47,7 +47,7 @@ public class AdminLoginServiceImpl implements LoginService{
     	
     String key = RandomString.make(4);
     
-    CurrentSessionUser currentUserSession = new CurrentSessionUser( existingAdmin.getAdminId(), key , LocalDateTime.now() );
+    CurrentSessionUser currentUserSession = new CurrentSessionUser( existingAdmin.getAdminId(), key , LocalDateTime.now(),"Admin" );
     	
     		cRepo.save(currentUserSession);
     		

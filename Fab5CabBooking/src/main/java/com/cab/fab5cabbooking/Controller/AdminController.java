@@ -21,7 +21,7 @@ import com.cab.fab5cabbooking.Model.CurrentSessionUser;
 import com.cab.fab5cabbooking.Model.Login;
 import com.cab.fab5cabbooking.Repository.AdminRepository;
 import com.cab.fab5cabbooking.Service.AdminService;
-import com.cab.fab5cabbooking.Service.LoginService;
+import com.cab.fab5cabbooking.Service.AdminLoginService;
 
 @RestController
 public class AdminController {
@@ -63,7 +63,7 @@ public class AdminController {
 	
 	
 	@Autowired
-	LoginService loginservice;
+	AdminLoginService loginservice;
 	
 	
 	@PostMapping("/loginAdmin")
