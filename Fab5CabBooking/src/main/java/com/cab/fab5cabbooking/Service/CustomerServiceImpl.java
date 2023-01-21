@@ -16,7 +16,7 @@ public class CustomerServiceImpl implements CustomerService {
     CustomerRepository customerRepository;
 
     @Override
-    public Customer resgisterAdmin(Customer customer) throws CustomerException {
+    public Customer registerAdmin(Customer customer) throws CustomerException {
 
         return customerRepository.save(customer);
     }

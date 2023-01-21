@@ -33,31 +33,24 @@ public class AdminController {
 
         Admin exisitingAdmin = repo.findByUsername(admin.getUsername());
 
-        if (exisitingAdmin != null)
+        if (exisitingAdmin != null) {
             throw new AdminException("Please change Username. Admin is registered with this username. ");
-
-        Admin createdAdmin = service.createUser(admin);
-
-        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(service.createUser(admin), HttpStatus.CREATED);
     }
 
     @PutMapping("/Admin")
     public ResponseEntity<Admin> updateAdmin(@RequestBody Admin admin, String key) throws AdminException {
-
-        Admin updatedAdmin = service.updateUser(admin, key);
-        return new ResponseEntity<>(updatedAdmin, HttpStatus.OK);
+        return new ResponseEntity<>(service.updateUser(admin, key), HttpStatus.OK);
     }
+
     @PostMapping("/loginAdmin")
     public ResponseEntity<String> AdminLogin(@RequestBody Login login) throws AdminException, CustomerException, LoginException {
-
-        String result = loginservice.login(login);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(loginservice.login(login), HttpStatus.OK);
     }
 
     @PostMapping("/Logout")
     public ResponseEntity<String> AdminLogout(@RequestParam(required = false) String key) throws AdminException, CustomerException, LoginException {
-
-        String result = loginservice.logOut(key);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(loginservice.logOut(key), HttpStatus.OK);
     }
 }
