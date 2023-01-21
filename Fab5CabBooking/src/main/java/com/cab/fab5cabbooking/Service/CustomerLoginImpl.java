@@ -14,7 +14,9 @@ import com.cab.fab5cabbooking.Repository.CurrentUserSessionRepository;
 import com.cab.fab5cabbooking.Repository.CustomerRepository;
 
 import net.bytebuddy.utility.RandomString;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CustomerLoginImpl implements CustomerLoginService {
 
     @Autowired

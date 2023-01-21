@@ -14,15 +14,23 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 public class CurrentSessionUser {
-    @Id
-  
-    @Column(unique = true)
-    private Integer id;
+
+  @Id
+//    @Column(unique = true)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer currentsessionid;
+    private Integer userid;
     
     private String uuid;
     
     private LocalDateTime localDateTime;
    
     private String role;
-   
+
+    public CurrentSessionUser(Integer userid, String uuid, LocalDateTime localDateTime, String role) {
+        this.userid = userid;
+        this.uuid = uuid;
+        this.localDateTime = localDateTime;
+        this.role = role;
+    }
 }

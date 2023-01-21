@@ -49,7 +49,7 @@ public class AdminController {
         return new ResponseEntity<>(loginservice.login(login), HttpStatus.OK);
     }
 
-    @PostMapping("/Logout")
+    @GetMapping ("/Logout")
     public ResponseEntity<String> AdminLogout(@RequestParam(required = false) String key) throws AdminException, CustomerException, LoginException {
         return new ResponseEntity<>(loginservice.logOut(key), HttpStatus.OK);
     }
