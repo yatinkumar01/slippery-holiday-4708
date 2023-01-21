@@ -35,7 +35,7 @@ public class AdminServiceImpl implements AdminService{
 		throw new AdminException("Please provide a valid key to update Admin");
 	}
 	
-	if( loggedinUser.getId() == admin.getAdminId()) {
+	if( loggedinUser.getUserid() == admin.getAdminId()) {
 	
 		return repo.save(admin);
 		

@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CustomerService {
 
-    public Customer registerAdmin(Customer customer) throws CustomerException;
+    public Customer registerCustomer(Customer customer) throws CustomerException;
 
     public Customer updateCustomer(Customer customer, int Id) throws CustomerException;
 

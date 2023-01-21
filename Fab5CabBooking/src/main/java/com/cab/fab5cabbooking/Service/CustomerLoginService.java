@@ -8,6 +8,7 @@ import com.cab.fab5cabbooking.Model.Customer;
 import com.cab.fab5cabbooking.Model.Login;
 
 public interface CustomerLoginService {
+
     public String login(Login login) throws LoginException, CustomerException;
 
 
