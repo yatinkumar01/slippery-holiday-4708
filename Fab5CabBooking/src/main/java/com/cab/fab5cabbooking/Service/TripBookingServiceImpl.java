@@ -36,10 +36,13 @@ public class TripBookingServiceImpl implements TripBookingService {
     @Autowired
     CabRepository cabRepository;
 
+    @Autowired
+    DriverService driverService;
+
     @Override
     public TripBooking addTrip(TripBooking tripBooking, Integer customerId) throws CustomerException, DriverException {
 
-        Optional<Customer> opt1 = customerRepository.findById(tripBooking.getCustomer().getCustomerId());
+        Optional<Customer> opt1 = customerRepository.findById(customerId);
 
         System.out.println("jai sri ram");
 
@@ -49,7 +52,7 @@ public class TripBookingServiceImpl implements TripBookingService {
             /* to find out the best driver with rating > 4.5 and assign it to the customers trip
              * get cab from driver and assign to the trip */
 
-            List<Driver> drivers = new DriverServiceImpl().viewBestDrivers();
+            List<Driver> drivers = driverService.viewBestDrivers();
 
             if (drivers.size() != 0) {
 
@@ -75,9 +78,9 @@ public class TripBookingServiceImpl implements TripBookingService {
                 customer.setTripBookingSet(customerTrips);
 //                tripBooking.setCustomer(customer);
 
-                Set<TripBooking> trips = new HashSet<>();
-                trips.add(tripBooking);
-                driver.setTripBookings(trips);
+                Set<TripBooking> driverTrips = new HashSet<>();
+                driverTrips.add(tripBooking);
+                driver.setTripBookings(driverTrips);
 
                 System.out.println("jai sri ram");
 

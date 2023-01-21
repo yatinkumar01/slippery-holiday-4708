@@ -45,7 +45,7 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<TripBooking> tripBookingSet=new HashSet<>();
+    private Set<TripBooking> tripBookingSet = new HashSet<>();
 
 
 }
