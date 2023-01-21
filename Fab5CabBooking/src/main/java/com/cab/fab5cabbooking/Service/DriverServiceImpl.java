@@ -51,11 +51,12 @@ public class DriverServiceImpl implements DriverService {
     public List<Driver> viewBestDrivers() throws DriverException {
 
         List<Driver> list = driverRepository.findAll();
-        return list.stream().filter(s-> s.getRating() > 4.5).toList();
+        return list.stream().filter(s -> s.getRating() > 4.5).toList();
     }
+
     @Override
     public Driver viewDriver(int driverId) throws DriverException {
 
-        return driverRepository.findById(driverId).orElseThrow(() -> new DriverException("Driver doesn't exist with id :"+ driverId));
+        return driverRepository.findById(driverId).orElseThrow(() -> new DriverException("Driver doesn't exist with id :" + driverId));
     }
 }

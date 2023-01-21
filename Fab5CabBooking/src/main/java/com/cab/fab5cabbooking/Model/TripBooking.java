@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -21,8 +22,8 @@ public class TripBooking {
     private Integer tripBookingId;
     private String fromLocation;
     private String toLocation;
-    private LocalDateTime fromDateTime;
-    private LocalDateTime toDateTime;
+    private LocalDate fromDateTime;
+    private LocalDate toDateTime;
     private Double distanceInKm;
 
     @JsonIgnore
