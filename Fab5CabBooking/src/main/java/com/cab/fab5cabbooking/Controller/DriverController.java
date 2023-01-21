@@ -18,31 +18,31 @@ public class DriverController {
     DriverService ds;
 
     @PostMapping("/addDriver")
-    public ResponseEntity<Driver> addDriverDetails(@RequestBody Driver driver) throws DriverException {
+    public ResponseEntity<Driver> addDriverDetailsHandler(@RequestBody Driver driver) throws DriverException {
 
         return new ResponseEntity<>(ds.registerDriver(driver), HttpStatus.OK);
     }
 
     @PutMapping("/updateDriver/{driverId}")
-    public ResponseEntity<Driver> updateDriverDetails(@RequestBody Driver driver, @PathVariable Integer driverId) throws DriverException {
+    public ResponseEntity<Driver> updateDriverDetailsHandler(@RequestBody Driver driver, @PathVariable Integer driverId) throws DriverException {
 
         return new ResponseEntity<>(ds.updateDriver(driver, driverId), HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteDriver/{driverId}")
-    public ResponseEntity<Driver> deleteDriverDetails(@PathVariable Integer driverId) throws DriverException {
+    public ResponseEntity<Driver> deleteDriverDetailsHandler(@PathVariable Integer driverId) throws DriverException {
 
         return new ResponseEntity<>(ds.deleteDriver(driverId), HttpStatus.OK);
     }
 
     @GetMapping("/getBestDrivers")
-    public ResponseEntity<List<Driver>> getBestDriversList() throws DriverException {
+    public ResponseEntity<List<Driver>> getBestDriversListHandler() throws DriverException {
 
         return new ResponseEntity<>(ds.viewBestDrivers(), HttpStatus.OK);
     }
 
     @GetMapping("/viewDriver/{driverId}")
-    public ResponseEntity<Driver> getBestDriversList(@PathVariable Integer driverId) throws DriverException {
+    public ResponseEntity<Driver> getBestDriversListHandler(@PathVariable Integer driverId) throws DriverException {
 
         return new ResponseEntity<>(ds.viewDriver(driverId), HttpStatus.OK);
     }
