@@ -23,7 +23,7 @@ public class Cab {
     @NotNull
     private CabType cabtype;
     private double perKmRate;
-    private Integer getCapacity;
+    private Integer capacity;
     private Boolean cabAvailable = true;
     @NotNull
     private String registrationNumber;

@@ -15,25 +15,37 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomerException.class)
     ResponseEntity<MyErrorDetails> customExceptionHandler(CustomerException customerException, WebRequest webRequest) {
-        MyErrorDetails object = new MyErrorDetails(LocalDateTime.now(), customerException.getMessage(), webRequest.getDescription(false));
-        return new ResponseEntity<MyErrorDetails>(object, HttpStatus.NOT_FOUND);
+        MyErrorDetails myErrorDetails = new MyErrorDetails(LocalDateTime.now(), customerException.getMessage(), webRequest.getDescription(false));
+        return new ResponseEntity<MyErrorDetails>(myErrorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CabException.class)
+    ResponseEntity<MyErrorDetails> cabExceptionHandler(CabException cabException, WebRequest webRequest) {
+        MyErrorDetails myErrorDetails = new MyErrorDetails(LocalDateTime.now(), cabException.getMessage(), webRequest.getDescription(false));
+        return new ResponseEntity<>(myErrorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DriverException.class)
+    ResponseEntity<MyErrorDetails> driverExceptionHandler(DriverException driverException, WebRequest webRequest) {
+        MyErrorDetails myErrorDetails = new MyErrorDetails(LocalDateTime.now(), driverException.getMessage(), webRequest.getDescription(false));
+        return new ResponseEntity<>(myErrorDetails, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
     ResponseEntity<MyErrorDetails> noHandlerExceptionHandler(NoHandlerFoundException customerException, WebRequest webRequest) {
-        MyErrorDetails object = new MyErrorDetails(LocalDateTime.now(), customerException.getMessage(), webRequest.getDescription(false));
-        return new ResponseEntity<MyErrorDetails>(object, HttpStatus.NOT_FOUND);
+        MyErrorDetails myErrorDetails = new MyErrorDetails(LocalDateTime.now(), customerException.getMessage(), webRequest.getDescription(false));
+        return new ResponseEntity<>(myErrorDetails, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<MyErrorDetails> methodArgumentExceptionHandler(MethodArgumentNotValidException customerException, WebRequest webRequest) {
-        MyErrorDetails object = new MyErrorDetails(LocalDateTime.now(), "Validation Error", customerException.getBindingResult().getFieldError().getDefaultMessage());
-        return new ResponseEntity<MyErrorDetails>(object, HttpStatus.NOT_FOUND);
+        MyErrorDetails myErrorDetails = new MyErrorDetails(LocalDateTime.now(), "Validation Error", customerException.getBindingResult().getFieldError().getDefaultMessage());
+        return new ResponseEntity<>(myErrorDetails, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)
     ResponseEntity<MyErrorDetails> mainExceptionHandler(Exception customerException, WebRequest webRequest) {
-        MyErrorDetails object = new MyErrorDetails(LocalDateTime.now(), customerException.getMessage(), webRequest.getDescription(false));
-        return new ResponseEntity<MyErrorDetails>(object, HttpStatus.NOT_FOUND);
+        MyErrorDetails myErrorDetails = new MyErrorDetails(LocalDateTime.now(), customerException.getMessage(), webRequest.getDescription(false));
+        return new ResponseEntity<>(myErrorDetails, HttpStatus.NOT_FOUND);
     }
 }
