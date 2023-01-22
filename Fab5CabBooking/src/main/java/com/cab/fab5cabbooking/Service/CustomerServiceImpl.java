@@ -14,7 +14,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     CustomerRepository customerRepository;
-
     @Override
     public Customer registerCustomer(Customer customer) throws CustomerException {
 

@@ -7,14 +7,14 @@ import java.util.List;
 
 public interface CustomerService {
 
-    public Customer registerCustomer(Customer customer) throws CustomerException;
+     Customer registerCustomer(Customer customer) throws CustomerException;
 
-    public Customer updateCustomer(Customer customer, int Id) throws CustomerException;
+     Customer updateCustomer(Customer customer, int Id) throws CustomerException;
 
-    public Customer deleteCustomer(Integer customerId) throws CustomerException;
+     Customer deleteCustomer(Integer customerId) throws CustomerException;
 
-    public List<Customer> viewCustomers() throws CustomerException;
+     List<Customer> viewCustomers() throws CustomerException;
 
-    public Customer viewCustomer(Integer customerId) throws CustomerException;
+     Customer viewCustomer(Integer customerId) throws CustomerException;
 
 }

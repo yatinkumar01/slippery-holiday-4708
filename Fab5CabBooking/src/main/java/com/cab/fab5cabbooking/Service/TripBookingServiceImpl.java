@@ -83,8 +83,6 @@ public class TripBookingServiceImpl implements TripBookingService {
                 List<Driver> drivers = driverService.viewBestDrivers();
 
                 if (drivers.size() != 0) {
-                    System.out.println("jai sri ram");
-
                     Driver driver = drivers.get(0);
 
                     Cab cab = driver.getCab();
@@ -127,7 +125,6 @@ public class TripBookingServiceImpl implements TripBookingService {
                 List<Driver> drivers = driverService.viewBestDrivers();
 
                 if (drivers.size() != 0) {
-                    System.out.println("jai sri ram");
 
                     Driver driver = drivers.get(0);
 
@@ -170,10 +167,6 @@ public class TripBookingServiceImpl implements TripBookingService {
                 cab.setCabAvailable(true);
 
                 driverRepository.save(driver);
-
-//            tripBookingRepository.delete(tb);
-
-                System.out.println("jai sri ram");
                 return tb;
             }
             throw new TripException("No trips found with given trip details");
@@ -202,23 +195,16 @@ public class TripBookingServiceImpl implements TripBookingService {
                 Cab cab = driver.getCab();
                 cab.setCabAvailable(true);
 
-                System.out.println("jai sri ram");
-
                 driverRepository.save(driver);
                 tripBooking.setDriver(driver);
                 tripBooking.setCustomer(tripBooking.getCustomer());
                 tripBookingRepository.save(tripBooking);
 
-                System.out.println("jai sri ram");
-
-                return "Your bill amount for the Trip -> " + tripBooking.getBill() * 1.18 + "\n Thanks for choosing our cab services, " +
-                        "we hope to see you again";
+                return "Your bill amount for the Trip -> " + tripBooking.getBill() * 1.18 + "\n Thanks for choosing our cab services, " + "we hope to see you again";
             }
             throw new TripException("No trip found with given trip id -> " + tripId);
         }
         throw new LoginException("Customer with this Key is not LoggedIn. Please provide valid Key ");
-
-
     }
 
     @Override
@@ -240,15 +226,11 @@ public class TripBookingServiceImpl implements TripBookingService {
 
                 Double bill = tripBooking.getBill() * 1.18;
 
-                System.out.println("jai sri ram");
-
                 return "Your bill amount for the Trip -> " + bill;
             }
             throw new TripException("No Trip details found with given id -> " + tripId);
         }
         throw new LoginException("Customer with this Key is not LoggedIn. Please provide valid Key ");
-
-
     }
 
     /* admin methods  */
@@ -259,5 +241,4 @@ public class TripBookingServiceImpl implements TripBookingService {
 
         return tripBookingRepository.findAll();
     }
-
 }
