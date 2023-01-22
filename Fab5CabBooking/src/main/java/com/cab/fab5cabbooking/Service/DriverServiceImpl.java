@@ -1,12 +1,17 @@
 package com.cab.fab5cabbooking.Service;
 
+import com.cab.fab5cabbooking.Exceptions.CabException;
 import com.cab.fab5cabbooking.Exceptions.DriverException;
+import com.cab.fab5cabbooking.Exceptions.LoginException;
 import com.cab.fab5cabbooking.Model.Cab;
 import com.cab.fab5cabbooking.Model.CabType;
 import com.cab.fab5cabbooking.Model.Driver;
 import com.cab.fab5cabbooking.Repository.CabRepository;
+import com.cab.fab5cabbooking.Repository.CurrentUserSessionRepository;
 import com.cab.fab5cabbooking.Repository.DriverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,44 +25,71 @@ public class DriverServiceImpl implements DriverService {
     @Autowired
     CabRepository cabRepository;
 
-    @Override
-    public Driver registerDriver(Driver driver) throws DriverException {
+    @Autowired
+    CurrentUserSessionRepository cService;
 
-        Cab cab = driver.getCab();
-        CabType cabtype = cab.getCabtype();
-        cab.setSittingCapacity(cabtype.sittingCapacity());
-        cab.setPerKmRate(cabtype.providePrice());
-        driver.setCab(cab);
+    public boolean isLogin(String key) throws LoginException {
 
-        return driverRepository.save(driver);
+        String role = cService.findByUuid(key).getRole();
+
+        if (role.equals("Admin")) {
+            return true;
+        }
+        throw new LoginException("Admin with this Key is not LoggedIn. Please provide valid Key ");
     }
 
     @Override
-    public Driver updateDriver(Driver driver, int driverId) throws DriverException {
+    public Driver registerDriver(Driver driver, String key) throws DriverException, LoginException {
 
-        Driver driverObj = driverRepository.findById(driverId).orElseThrow(() -> new DriverException("Driver doesn't exist with id : " + driverId));
+        if (isLogin(key)) {
+            Cab cab = driver.getCab();
+            CabType cabtype = cab.getCabtype();
+            cab.setSittingCapacity(cabtype.sittingCapacity());
+            cab.setPerKmRate(cabtype.providePrice());
+            driver.setCab(cab);
 
-        /*Cab cab = driver.getCab();
-        cabRepository.delete(cab);*/
+            return driverRepository.save(driver);
+        }
+        throw new LoginException("Admin with this Key is not LoggedIn. Please provide valid Key ");
 
-        Cab cab = driver.getCab();
-        CabType cabtype = cab.getCabtype();
-        cab.setSittingCapacity(cabtype.sittingCapacity());
-        cab.setPerKmRate(cabtype.providePrice());
-
-        driverObj.setCab(driver.getCab());
-        driverObj.setLicenceNo(driver.getLicenceNo());
-        driverObj.setRating(driver.getRating());
-        driverRepository.save(driverObj);
-        return driverObj;
     }
 
     @Override
-    public Driver deleteDriver(int driverId) throws DriverException {
+    public Driver updateDriver(Driver driver, int driverId, String key) throws DriverException, LoginException, CabException {
 
-        Driver driver = driverRepository.findById(driverId).orElseThrow(() -> new DriverException("Driver doesn't exist with id : " + driverId));
-        driverRepository.delete(driver);
-        return driver;
+        if (isLogin(key)) {
+
+            Driver driverObj = driverRepository.findById(driverId).orElseThrow(() -> new DriverException("Driver doesn't exist with id : " + driverId));
+
+            Integer cabId = driver.getCab().getCabId();
+
+            Cab cab = cabRepository.findById(cabId).orElseThrow(() -> new CabException("No Cabs found"));
+
+            CabType cabtype = cab.getCabtype();
+            cab.setSittingCapacity(cabtype.sittingCapacity());
+            cab.setPerKmRate(cabtype.providePrice());
+
+            driverObj.setCab(cab);
+
+            driverObj.setLicenceNo(driver.getLicenceNo());
+            driverObj.setRating(driver.getRating());
+            driverRepository.save(driverObj);
+            return driverObj;
+        }
+        throw new LoginException("Admin with this Key is not LoggedIn. Please provide valid Key ");
+
+    }
+
+    @Override
+    public Driver deleteDriver(int driverId, String key) throws DriverException, LoginException {
+
+        if (isLogin(key)) {
+            Driver driver = driverRepository.findById(driverId).orElseThrow(() -> new DriverException("Driver doesn't exist with id : " + driverId));
+            driverRepository.delete(driver);
+            return driver;
+        }
+        throw new LoginException("Admin with this Key is not LoggedIn. Please provide valid Key ");
+
     }
 
     @Override
@@ -68,8 +100,11 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public Driver viewDriver(int driverId) throws DriverException {
+    public Driver viewDriver(int driverId, String key) throws DriverException, LoginException {
 
-        return driverRepository.findById(driverId).orElseThrow(() -> new DriverException("Driver doesn't exist with id :" + driverId));
+        if (isLogin(key)) {
+            return driverRepository.findById(driverId).orElseThrow(() -> new DriverException("Driver doesn't exist with id :" + driverId));
+        }
+        throw new LoginException("Admin with this Key is not LoggedIn. Please provide valid Key ");
     }
 }

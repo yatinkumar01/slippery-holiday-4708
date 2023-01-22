@@ -1,6 +1,7 @@
 package com.cab.fab5cabbooking.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -17,7 +18,7 @@ import java.util.Objects;
 @Data
 public class TripBooking {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Integer tripBookingId;
     private String fromLocation;
@@ -30,11 +31,11 @@ public class TripBooking {
     private Double bill;
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Customer customer;
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Driver driver;
 
 

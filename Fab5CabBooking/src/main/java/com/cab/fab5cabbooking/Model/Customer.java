@@ -43,7 +43,7 @@ public class Customer {
     @Email
     private String email;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer")
     @JsonIgnore
     private Set<TripBooking> tripBookingSet = new HashSet<>();
 
