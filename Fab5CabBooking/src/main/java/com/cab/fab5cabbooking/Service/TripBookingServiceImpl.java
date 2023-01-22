@@ -2,24 +2,19 @@ package com.cab.fab5cabbooking.Service;
 
 import com.cab.fab5cabbooking.Exceptions.CustomerException;
 import com.cab.fab5cabbooking.Exceptions.DriverException;
+import com.cab.fab5cabbooking.Exceptions.LoginException;
 import com.cab.fab5cabbooking.Exceptions.TripException;
 import com.cab.fab5cabbooking.Model.Cab;
 import com.cab.fab5cabbooking.Model.Customer;
 import com.cab.fab5cabbooking.Model.Driver;
 import com.cab.fab5cabbooking.Model.TripBooking;
-import com.cab.fab5cabbooking.Repository.CabRepository;
-import com.cab.fab5cabbooking.Repository.CustomerRepository;
-import com.cab.fab5cabbooking.Repository.DriverRepository;
-import com.cab.fab5cabbooking.Repository.TripBookingRepository;
+import com.cab.fab5cabbooking.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class TripBookingServiceImpl implements TripBookingService {
@@ -36,243 +31,233 @@ public class TripBookingServiceImpl implements TripBookingService {
     @Autowired
     CabRepository cabRepository;
 
-    @Override
-    public TripBooking addTrip(TripBooking tripBooking, Integer customerId) throws CustomerException, DriverException {
+    @Autowired
+    DriverService driverService;
 
-        Optional<Customer> opt1 = customerRepository.findById(tripBooking.getCustomer().getCustomerId());
+    @Autowired
+    CurrentUserSessionRepository cService;
 
-        System.out.println("jai sri ram");
+    /*
+    *
+    * Integer customerId = cService.findByUuid(key).getUserid();
 
-        if (opt1.isPresent()) {
-            Customer customer = opt1.get();
+        if (isLoginCustomer(key)) {
 
-            /* to find out the best driver with rating > 4.5 and assign it to the customers trip
-             * get cab from driver and assign to the trip */
-
-            List<Driver> drivers = new DriverServiceImpl().viewBestDrivers();
-
-            if (drivers.size() != 0) {
-
-                /* get the best driver*/
-                Driver driver = drivers.get(0);
-
-                /* get the cab for driver and make cab not available until the trip ends */
-                Cab cab = driver.getCab();
-                cab.setCabAvailable(false);
-                driver.setCab(cab);
-
-                /* set bill as distance entered in km multiplied by cab charges per km */
-                Double fare = tripBooking.getDistanceInKm() * cab.getPerKmRate();
-                tripBooking.setBill(fare);
-                tripBooking.setDriver(driver);
-
-                System.out.println("jai sri ram");
-
-                /* now assign the trip to customer where he enters destination and source with distance to travel*/
-
-                Set<TripBooking> customerTrips = new HashSet<>();
-                customerTrips.add(tripBooking);
-                customer.setTripBookingSet(customerTrips);
-//                tripBooking.setCustomer(customer);
-
-                Set<TripBooking> trips = new HashSet<>();
-                trips.add(tripBooking);
-                driver.setTripBookings(trips);
-
-                System.out.println("jai sri ram");
-
-                return tripBookingRepository.save(tripBooking);
-            }
-            throw new DriverException("No drivers available right now! please try again some time.");
         }
-        throw new CustomerException("No customer found with given trip details! please enter valid customer details!");
+        throw new LoginException("Customer with this Key is not LoggedIn. Please provide valid Key ");
+    *
+    * */
+
+    public boolean isLoginAdmin(String key) throws LoginException {
+
+        String role = cService.findByUuid(key).getRole();
+
+        if (role.equals("Admin")) {
+            return true;
+        }
+        throw new LoginException("Admin with this Key is not LoggedIn. Please provide valid Key ");
+    }
+
+    public boolean isLoginCustomer(String key) throws LoginException {
+
+        String role = cService.findByUuid(key).getRole();
+
+        if (role.equals("Customer")) {
+            return true;
+        }
+        throw new LoginException("Customer with this Key is not LoggedIn. Please provide valid Key ");
     }
 
     @Override
-    public TripBooking updateTrip(TripBooking tripBooking) throws TripException {
+    public TripBooking addTrip(TripBooking tripBooking, String key) throws CustomerException, DriverException, LoginException {
+
+        Integer customerId = cService.findByUuid(key).getUserid();
+
+        if (isLoginCustomer(key)) {
+
+            Optional<Customer> opt1 = customerRepository.findById(customerId);
+
+            if (opt1.isPresent()) {
+                Customer customer = opt1.get();
+
+                List<Driver> drivers = driverService.viewBestDrivers();
+
+                if (drivers.size() != 0) {
+                    System.out.println("jai sri ram");
+
+                    Driver driver = drivers.get(0);
+
+                    Cab cab = driver.getCab();
+                    cab.setCabAvailable(false);
+
+                    Double fare = tripBooking.getDistanceInKm() * cab.getPerKmRate() + 60;
+                    tripBooking.setBill(fare);
+
+                    tripBooking.setDriver(driver);
+                    tripBooking.setCustomer(customer);
+
+                    return tripBookingRepository.save(tripBooking);
+                }
+                throw new DriverException("No drivers available right now! please try again some time.");
+            }
+            throw new CustomerException("No customer found with given trip details! please enter valid customer details!");
+        }
+        throw new LoginException("Customer with this Key is not LoggedIn. Please provide valid Key ");
+
+
+    }
+
+    @Override
+    public TripBooking updateTrip(TripBooking tripBooking, String key) throws TripException, DriverException, CustomerException, LoginException {
 
         /*
          * here we can update the details of trip when ever we change the destination and that also
          * reflects the bill amount
          * */
 
-        Optional<TripBooking> opt = tripBookingRepository.findById(tripBooking.getTripBookingId());
+        Integer customerId = cService.findByUuid(key).getUserid();
 
-        if (opt.isPresent()) {
+        if (isLoginCustomer(key)) {
 
-            TripBooking tripBooking1 = opt.get();
+            Optional<Customer> opt1 = customerRepository.findById(customerId);
 
-            System.out.println("jai sri ram");
+            if (opt1.isPresent()) {
+                Customer customer = opt1.get();
 
-            /* here we assign the updated destination and its the  price */
+                List<Driver> drivers = driverService.viewBestDrivers();
 
-            Double distance = tripBooking.getDistanceInKm();
-            Double fare = tripBooking.getDriver().getCab().getPerKmRate();
+                if (drivers.size() != 0) {
+                    System.out.println("jai sri ram");
 
-            tripBooking.setBill(distance * fare);
+                    Driver driver = drivers.get(0);
 
-            System.out.println("jai sri ram");
+                    Cab cab = driver.getCab();
+                    cab.setCabAvailable(false);
 
-            return tripBookingRepository.save(tripBooking);
+                    Double fare = tripBooking.getDistanceInKm() * cab.getPerKmRate() + 60;
+                    tripBooking.setBill(fare);
+
+                    tripBooking.setDriver(driver);
+                    tripBooking.setCustomer(customer);
+
+                    return tripBookingRepository.save(tripBooking);
+                }
+                throw new DriverException("No drivers available right now! please try again some time.");
+            }
+            throw new CustomerException("No customer found with given trip details! please enter valid customer details!");
         }
-        throw new TripException("No trips found with given trip details");
+        throw new LoginException("Customer with this Key is not LoggedIn. Please provide valid Key ");
 
     }
 
     @Override
-    public TripBooking deleteTrip(Integer tripId) throws TripException {
+    public TripBooking deleteTrip(Integer tripId, String key) throws TripException, LoginException {
 
         /*
          * this method is intended for internal use*/
 
-        Optional<TripBooking> opt = tripBookingRepository.findById(tripId);
+        Integer customerId = cService.findByUuid(key).getUserid();
 
-        if (opt.isPresent()) {
-            TripBooking tb = opt.get();
-            tb.setDriver(null);
-            tripBookingRepository.delete(tb);
+        if (isLoginAdmin(key)) {
 
-            System.out.println("jai sri ram");
-            return tb;
-        }
-        throw new TripException("No trips found with given trip details");
+            Optional<TripBooking> opt = tripBookingRepository.findById(tripId);
 
-    }
+            if (opt.isPresent()) {
+                TripBooking tb = opt.get();
 
-    @Override
-    public Set<TripBooking> viewTripOfCustomer(Integer customerId) throws TripException, CustomerException {
+                Driver driver = tb.getDriver();
+                Cab cab = driver.getCab();
+                cab.setCabAvailable(true);
 
-        /*
-         * this method gets all the trip details of a customer based on his id*/
+                driverRepository.save(driver);
 
-        Optional<Customer> opt = customerRepository.findById(customerId);
-
-        if (opt.isPresent()) {
-            Customer customer = opt.get();
-
-            System.out.println("jai sri ram");
-
-//            TripBooking tripBooking = customer.getTripBooking();
-
-            Set<TripBooking> trips = customer.getTripBookingSet();
-
-            if (trips.size() != 0) {
+//            tripBookingRepository.delete(tb);
 
                 System.out.println("jai sri ram");
-
-                return trips;
+                return tb;
             }
-            throw new TripException("No trips found, you can add by booking trip!!");
+            throw new TripException("No trips found with given trip details");
         }
-        throw new CustomerException("No customer found with given customer id -> " + customerId);
+        throw new LoginException("Admin with this Key is not LoggedIn. Please provide valid Key ");
+
     }
 
+
     @Override
-    public TripBooking endTrip(Integer tripId) throws TripException {
+    public String endTrip(Integer tripId, String key) throws TripException, LoginException {
 
         /* this method ends the trip of a customer by finding the trip by its id and
          * making the cab status available for another booking and also generate the
          * bill amount for distance travelled and set the payment status paid*/
 
-        Optional<TripBooking> opt = tripBookingRepository.findById(tripId);
+        if (isLoginCustomer(key)) {
 
-        if (opt.isPresent()) {
+            Optional<TripBooking> opt = tripBookingRepository.findById(tripId);
 
-            TripBooking tripBooking = opt.get();
+            if (opt.isPresent()) {
 
-            Driver driver = tripBooking.getDriver();
-            Cab cab = driver.getCab();
-            cab.setCabAvailable(true);
+                TripBooking tripBooking = opt.get();
 
-            System.out.println("jai sri ram");
+                Driver driver = tripBooking.getDriver();
+                Cab cab = driver.getCab();
+                cab.setCabAvailable(true);
 
-            driverRepository.save(driver);
-            tripBooking.setDriver(driver);
-            tripBookingRepository.save(tripBooking);
+                System.out.println("jai sri ram");
 
-            System.out.println("jai sri ram");
+                driverRepository.save(driver);
+                tripBooking.setDriver(driver);
+                tripBooking.setCustomer(tripBooking.getCustomer());
+                tripBookingRepository.save(tripBooking);
 
-            return tripBooking;
+                System.out.println("jai sri ram");
+
+                return "Your bill amount for the Trip -> " + tripBooking.getBill() * 1.18 + "\n Thanks for choosing our cab services, " +
+                        "we hope to see you again";
+            }
+            throw new TripException("No trip found with given trip id -> " + tripId);
         }
-        throw new TripException("No trip found with given trip id -> " + tripId);
+        throw new LoginException("Customer with this Key is not LoggedIn. Please provide valid Key ");
+
 
     }
 
     @Override
-    public String calculateBillAmount(Integer customerId) throws TripException, CustomerException {
+    public String calculateBillAmount(Integer tripId, String key) throws TripException, CustomerException, LoginException {
 
         /*
          * this method gives the total bill amount of a particular trip of a customer*/
 
-        Optional<Customer> opt = customerRepository.findById(customerId);
 
-        if (opt.isPresent()) {
+        if (isLoginCustomer(key)) {
 
-            Customer customer = opt.get();
+            Optional<TripBooking> opt = tripBookingRepository.findById(tripId);
 
-            Set<TripBooking> trips = customer.getTripBookingSet();
+            if (opt.isPresent()) {
 
-            System.out.println("jai sri ram");
+                TripBooking tripBooking = opt.get();
 
-            if (trips.size() == 0) {
-                throw new TripException("No trips found for the customer with given id -> " + customerId);
+                /* 1.18 is GST */
+
+                Double bill = tripBooking.getBill() * 1.18;
+
+                System.out.println("jai sri ram");
+
+                return "Your bill amount for the Trip -> " + bill;
             }
-            Double bill = null;
-
-            for (TripBooking t : trips) {
-                bill += t.getBill();
-            }
-
-            System.out.println("jai sri ram");
-
-            return "Amount for the Trip -> " + bill;
+            throw new TripException("No Trip details found with given id -> " + tripId);
         }
-        throw new CustomerException("No customer found with given id -> " + customerId);
+        throw new LoginException("Customer with this Key is not LoggedIn. Please provide valid Key ");
+
 
     }
 
     /* admin methods  */
 
-    @Override
-    public List<TripBooking> getAllTripsCabWise(String cabType) throws TripException {
-
-        /*this method gets all the trips for cabs that are registered*/
-
-        List<TripBooking> allTrips = tripBookingRepository.findAll();
-
-        List<TripBooking> listByCabType = allTrips.stream().filter(t -> t.getDriver().getCab().getCabtype().equals(cabType)).toList();
-
-
-        System.out.println("jai sri ram");
-
-
-        if (listByCabType.size() != 0) {
-            return listByCabType;
-        }
-        throw new TripException("No trips found with given cab type -> " + cabType);
-
-    }
 
     @Override
     public List<TripBooking> getAllTrips() throws TripException {
 
-        /*this method gets all the trips of all the customers*/
-
         return tripBookingRepository.findAll();
     }
 
-    /*@Override
-    public List<TripBooking> gitTripsBetweenDaysForACustomer(Integer customerId, LocalDate startDate, LocalDate endDate) throws TripException {
-
-        *//*this method gives the result of trips in between dates for a particular customer*//*
-
-        List<TripBooking> tripList = tripBookingRepository.getTripsBetweenDates(customerId, startDate, endDate);
-
-        System.out.println("jai sri ram");
-
-        if (tripList.size() == 0) {
-            throw new TripException("No trips found in between given dates");
-        }
-        return tripList;
-    }*/
 }

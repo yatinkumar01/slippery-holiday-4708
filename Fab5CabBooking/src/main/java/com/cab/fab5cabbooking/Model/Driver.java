@@ -34,7 +34,7 @@ public class Driver {
     private Cab cab;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "driver")
+    @OneToMany(mappedBy = "driver",cascade = CascadeType.ALL)
     private Set<TripBooking> tripBookings = new HashSet<>();
 
 }

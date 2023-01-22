@@ -1,9 +1,11 @@
 package com.cab.fab5cabbooking.Service;
 
 import com.cab.fab5cabbooking.Exceptions.CabException;
+import com.cab.fab5cabbooking.Exceptions.LoginException;
 import com.cab.fab5cabbooking.Model.Cab;
 import com.cab.fab5cabbooking.Model.CabType;
 import com.cab.fab5cabbooking.Repository.CabRepository;
+import com.cab.fab5cabbooking.Repository.CurrentUserSessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,25 +16,45 @@ public class CabServiceImpl implements CabService {
     @Autowired
     CabRepository cabRepository;
 
-    @Override
-    public Cab registerCab(Cab cab) throws CabException {
+    @Autowired
+    CurrentUserSessionRepository cService;
 
-        CabType type = cab.getCabtype();
+    public boolean isLoginAdmin(String key) throws LoginException {
 
-        cab.setPerKmRate(type.providePrice());
-        cab.setSittingCapacity(type.sittingCapacity());
+        String role = cService.findByUuid(key).getRole();
 
-        return cabRepository.save(cab);
+        if (role.equals("Admin")) {
+            return true;
+        }
+        throw new LoginException("Admin with this Key is not LoggedIn. Please provide valid Key ");
     }
 
     @Override
-    public Cab updateCab(int cabId, Cab cab) throws CabException {
+    public Cab registerCab(Cab cab, String key) throws CabException, LoginException {
 
-        Cab cabObj = cabRepository.findById(cabId).orElseThrow(() -> new CabException("Cab does not exist with ID" + cabId));
-        CabType type = cab.getCabtype();
-        cab.setPerKmRate(type.providePrice());
-        cab.setSittingCapacity(type.sittingCapacity());
-        return cabRepository.save(cab);
+        if (isLoginAdmin(key)) {
+            CabType type = cab.getCabtype();
+
+            cab.setPerKmRate(type.providePrice());
+            cab.setSittingCapacity(type.sittingCapacity());
+
+            return cabRepository.save(cab);
+        }
+        throw new LoginException("Admin with this Key is not LoggedIn. Please provide valid Key ");
+    }
+
+    @Override
+    public Cab updateCab(int cabId, Cab cab, String key) throws CabException, LoginException {
+
+        if (isLoginAdmin(key)) {
+
+            Cab cabObj = cabRepository.findById(cabId).orElseThrow(() -> new CabException("Cab does not exist with ID" + cabId));
+            CabType type = cab.getCabtype();
+            cab.setPerKmRate(type.providePrice());
+            cab.setSittingCapacity(type.sittingCapacity());
+            return cabRepository.save(cab);
+        }
+        throw new LoginException("Admin with this Key is not LoggedIn. Please provide valid Key ");
     }
 
     @Override

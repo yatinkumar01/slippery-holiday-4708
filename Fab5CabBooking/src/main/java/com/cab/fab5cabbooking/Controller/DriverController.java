@@ -1,6 +1,8 @@
 package com.cab.fab5cabbooking.Controller;
 
+import com.cab.fab5cabbooking.Exceptions.CabException;
 import com.cab.fab5cabbooking.Exceptions.DriverException;
+import com.cab.fab5cabbooking.Exceptions.LoginException;
 import com.cab.fab5cabbooking.Model.Driver;
 import com.cab.fab5cabbooking.Service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,22 +20,22 @@ public class DriverController {
     @Autowired
     DriverService ds;
 
-    @PostMapping("/addDriver")
-    public ResponseEntity<Driver> addDriverDetailsHandler(@RequestBody Driver driver) throws DriverException {
+    @PostMapping("/addDriver/{key}")
+    public ResponseEntity<Driver> addDriverDetailsHandler(@Valid @RequestBody Driver driver, @PathVariable String key) throws DriverException, LoginException {
 
-        return new ResponseEntity<>(ds.registerDriver(driver), HttpStatus.OK);
+        return new ResponseEntity<>(ds.registerDriver(driver, key), HttpStatus.OK);
     }
 
-    @PutMapping("/updateDriver/{driverId}")
-    public ResponseEntity<Driver> updateDriverDetailsHandler(@RequestBody Driver driver, @PathVariable Integer driverId) throws DriverException {
+    @PutMapping("/updateDriver/{driverId}/{key}")
+    public ResponseEntity<Driver> updateDriverDetailsHandler(@Valid @RequestBody Driver driver, @PathVariable Integer driverId, @PathVariable String key) throws DriverException, LoginException, CabException {
 
-        return new ResponseEntity<>(ds.updateDriver(driver, driverId), HttpStatus.OK);
+        return new ResponseEntity<>(ds.updateDriver(driver, driverId, key), HttpStatus.OK);
     }
 
-    @DeleteMapping("/deleteDriver/{driverId}")
-    public ResponseEntity<Driver> deleteDriverDetailsHandler(@PathVariable Integer driverId) throws DriverException {
+    @DeleteMapping("/deleteDriver/{driverId}/{key}")
+    public ResponseEntity<Driver> deleteDriverDetailsHandler(@PathVariable Integer driverId, @PathVariable String key) throws DriverException, LoginException {
 
-        return new ResponseEntity<>(ds.deleteDriver(driverId), HttpStatus.OK);
+        return new ResponseEntity<>(ds.deleteDriver(driverId, key), HttpStatus.OK);
     }
 
     @GetMapping("/getBestDrivers")
@@ -41,10 +44,10 @@ public class DriverController {
         return new ResponseEntity<>(ds.viewBestDrivers(), HttpStatus.OK);
     }
 
-    @GetMapping("/viewDriver/{driverId}")
-    public ResponseEntity<Driver> getBestDriversListHandler(@PathVariable Integer driverId) throws DriverException {
+    @GetMapping("/viewDriver/{driverId}/{key}")
+    public ResponseEntity<Driver> getBestDriversListHandler(@PathVariable Integer driverId, @PathVariable String key) throws DriverException, LoginException {
 
-        return new ResponseEntity<>(ds.viewDriver(driverId), HttpStatus.OK);
+        return new ResponseEntity<>(ds.viewDriver(driverId, key), HttpStatus.OK);
     }
 
 }
